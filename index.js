@@ -63,18 +63,22 @@ function getApiOnLoad() {
 }
 function setCards() {
     var cardsContainer = document.getElementById('cards-container');
-    for (var i = 0; i < allCoins.length; i++) { // Looping through all Coins and making a card with each one 
+    var _loop_1 = function (i) {
         if (i <= 100) { //~ Limited for the first 100 coins at the moment
             var cardDiv = document.createElement('div');
             cardDiv.className = 'col-4';
-            cardDiv.innerHTML =
-                "<div id=\"" + allCoins[i].name + "\" class=\"col-4\">\n                <div class=\"card\" style=\"width: 18rem;\">\n                    <div class=\"card-body\">\n\n                        <div class=\"d-flex justify-content-between\"> \n                        <h5 class=\"card-title\">" + allCoins[i].symbol + "</h5> \n                            <label class=\"switch\">\n                            <input type=\"checkbox\" onclick=>\n                            <span class=\"slider round\"></span>\n                            </label>\n                        </div>\n\n                        <p class=\"card-text\">" + allCoins[i].name + "</p>\n                        \n                        <p>\n                          <button class=\"btn btn-primary\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#collapseExample" + i + "\" aria-expanded=\"false\" aria-controls=\"collapseExample\" onclick=fn(\"" + allCoins[i].id + "\")>\n                             More Info\n                          </button>\n                        </p>\n\n                        <div class=\"collapse\" id=\"collapseExample" + i + "\">\n                            <div class=\"card card-body\" id=\"childContent-" + allCoins[i].id + "\">\n                            </div>\n                        </div>\n                    \n                    </div>\n                </div>\n            </div>";
+            cardDiv.innerHTML = buildCardHTML(allCoins[i], i);
+            cardDiv.addEventListener('shown.bs.collapse', function () { return getSpecificCoin(allCoins[i].id); });
             cardsContainer === null || cardsContainer === void 0 ? void 0 : cardsContainer.appendChild(cardDiv);
         }
+    };
+    for (var i = 0; i < allCoins.length; i++) {
+        _loop_1(i);
     }
 }
 var AllCoinsInfo = /** @class */ (function () {
-    function AllCoinsInfo(img, usd, eur, ils) {
+    function AllCoinsInfo(img, usd, eur, ils, id) {
+        this.id = id;
         this.img = img;
         this.usd = usd;
         this.eur = eur;
@@ -83,33 +87,82 @@ var AllCoinsInfo = /** @class */ (function () {
     AllCoinsInfo.prototype.print = function () {
         console.log("\n        image Url: " + this.img + "\n        Usd price: " + this.usd + "\n        Eur Price: " + this.eur + "\n        Ils Price: " + this.ils + "\n        ");
     };
+    AllCoinsInfo.prototype.storage = function () {
+    };
     return AllCoinsInfo;
 }());
-function fn(id) {
+function getSpecificCoin(id) {
     return __awaiter(this, void 0, void 0, function () {
-        var res, data, selectedCoin, childEl, text, err_2;
+        var selectedCoin, coin, childEl, err_2;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    _a.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, fetch("https://api.coingecko.com/api/v3/coins/" + id)];
+                    _a.trys.push([0, 7, , 8]);
+                    selectedCoin = void 0;
+                    if (!localStorage.getItem(id)) return [3 /*break*/, 4];
+                    console.log('Exists in local storage!');
+                    coin = JSON.parse(localStorage.getItem(id));
+                    if (!isTimeDifferenceGreaterThanTwoMinutes(coin.date)) return [3 /*break*/, 2];
+                    console.log('Coin is old! get new mother fucker.');
+                    return [4 /*yield*/, fetchSpecificCoin(id)];
+                case 1:
+                    selectedCoin = _a.sent();
+                    saveInLocalStorage(selectedCoin);
+                    return [3 /*break*/, 3];
+                case 2:
+                    console.log('This coin is fresh yo!');
+                    selectedCoin = coin;
+                    _a.label = 3;
+                case 3: return [3 /*break*/, 6];
+                case 4:
+                    console.log('Dayum, no coin at all. Getting from the server.');
+                    return [4 /*yield*/, fetchSpecificCoin(id)];
+                case 5:
+                    selectedCoin = _a.sent();
+                    console.log(selectedCoin.id);
+                    saveInLocalStorage(selectedCoin);
+                    _a.label = 6;
+                case 6:
+                    childEl = document.getElementById("childContent-" + id);
+                    childEl.innerHTML = buildCoinDeatils(selectedCoin);
+                    return [3 /*break*/, 8];
+                case 7:
+                    err_2 = _a.sent();
+                    console.log(err_2);
+                    return [3 /*break*/, 8];
+                case 8: return [2 /*return*/];
+            }
+        });
+    });
+}
+function saveInLocalStorage(coin) {
+    coin.date = new Date();
+    localStorage.setItem(coin.id, JSON.stringify(coin));
+}
+function fetchSpecificCoin(id) {
+    return __awaiter(this, void 0, void 0, function () {
+        var res, data;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, fetch("https://api.coingecko.com/api/v3/coins/" + id)];
                 case 1:
                     res = _a.sent();
                     return [4 /*yield*/, res.json()];
                 case 2:
                     data = _a.sent();
-                    selectedCoin = new AllCoinsInfo(data.image.small, data.market_data.current_price.usd, data.market_data.current_price.eur, data.market_data.current_price.ils);
-                    childEl = document.getElementById("childContent-" + id);
-                    text = "\n        <img src=\"" + selectedCoin.img + "\" alt=\"\">\n        <br>\n        \n        <p>\n        <strong>Usd Price:</strong> " + selectedCoin.usd + " $<br> \n        <strong>Eur Price:</strong> " + selectedCoin.eur + " \u20AC<br>\n        <strong>Ils Price:</strong> " + selectedCoin.ils + " \u20AA\n        </p\n        ";
-                    childEl.innerHTML = text;
-                    return [3 /*break*/, 4];
-                case 3:
-                    err_2 = _a.sent();
-                    console.log(err_2);
-                    return [3 /*break*/, 4];
-                case 4: return [2 /*return*/];
+                    return [2 /*return*/, new AllCoinsInfo(data.image.small, data.market_data.current_price.usd, data.market_data.current_price.eur, data.market_data.current_price.ils, data.id)];
             }
         });
     });
 }
+function isTimeDifferenceGreaterThanTwoMinutes(date) {
+    var past = new Date(date).getTime();
+    var twoMins = 1000 * 60 * 2;
+    return (new Date().getTime() - past) > twoMins;
+}
 getApiOnLoad(); // Running the Get Api Function
+// HTML Templating \\
+var buildCoinDeatils = function (selectedCoin) { return "\n        <img src=\"" + selectedCoin.img + "\" alt=\"\">\n        <br>\n        \n        <p>\n        <strong>Usd Price:</strong> " + selectedCoin.usd + " $<br> \n        <strong>Eur Price:</strong> " + selectedCoin.eur + " \u20AC<br>\n        <strong>Ils Price:</strong> " + selectedCoin.ils + " \u20AA\n        </p\n        "; };
+var buildCardHTML = function (coin, i) {
+    return "<div id=\"" + coin.name + "\" class=\"col-4\">\n                    <div class=\"card\" style=\"width: 18rem;\">\n                        <div class=\"card-body\">\n    \n                            <div class=\"d-flex justify-content-between\"> \n                            <h5 class=\"card-title\">" + coin.symbol + "</h5> \n                                <label class=\"switch\">\n                                <input type=\"checkbox\" onclick=>\n                                <span class=\"slider round\"></span>\n                                </label>\n                            </div>\n    \n                            <p class=\"card-text\">" + coin.name + "</p>\n                            \n                            <p>\n                              <button class=\"btn btn-primary\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#collapseExample" + coin.id + "\" aria-expanded=\"false\" aria-controls=\"collapseExample\">\n                                 More Info\n                              </button>\n                            </p>\n    \n                            <div class=\"collapse\" id=\"collapseExample" + coin.id + "\">\n                                <div class=\"card card-body\" id=\"childContent-" + coin.id + "\">\n                                </div>\n                            </div>\n                        \n                        </div>\n                    </div>\n                </div>";
+};

@@ -28,36 +28,8 @@ function setCards() { // Sets the cards
         if (i <= 100) { //~ Limited for the first 100 coins at the moment
             const cardDiv = document.createElement('div')
             cardDiv.className = 'col-4'
-            cardDiv.innerHTML =
-                `<div id="${allCoins[i].name}" class="col-4">
-                <div class="card" style="width: 18rem;">
-                    <div class="card-body">
-
-                        <div class="d-flex justify-content-between"> 
-                        <h5 class="card-title">${allCoins[i].symbol}</h5> 
-                            <label class="switch">
-                            <input type="checkbox" onclick=>
-                            <span class="slider round"></span>
-                            </label>
-                        </div>
-
-                        <p class="card-text">${allCoins[i].name}</p>
-                        
-                        <p>
-                          <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample${i}" aria-expanded="false" aria-controls="collapseExample" onclick=fn("${allCoins[i].id}")>
-                             More Info
-                          </button>
-                        </p>
-
-                        <div class="collapse" id="collapseExample${i}">
-                            <div class="card card-body" id="childContent-${allCoins[i].id}">
-                            </div>
-                        </div>
-                    
-                    </div>
-                </div>
-            </div>`
-
+            cardDiv.innerHTML = buildCardHTML(allCoins[i], i)
+            cardDiv.addEventListener('shown.bs.collapse', () => getSpecificCoin(allCoins[i].id));
             cardsContainer?.appendChild(cardDiv)
         }
 
@@ -67,12 +39,15 @@ function setCards() { // Sets the cards
 
 
 class AllCoinsInfo {
+    id: string;
     img: string
     usd: number
     eur: number
     ils: number
+    date: Date;
 
-    constructor(img, usd, eur, ils) {
+    constructor(img, usd, eur, ils, id?) {
+        this.id = id;
         this.img = img
         this.usd = usd
         this.eur = eur
@@ -86,21 +61,69 @@ class AllCoinsInfo {
         Eur Price: ${this.eur}
         Ils Price: ${this.ils}
         `);
+    }
+
+    storage() {
+
+    }
+
+}
+
+
+async function getSpecificCoin(id: string) {
+    try {
+        let selectedCoin: AllCoinsInfo;
+
+        if (localStorage.getItem(id)) {
+            console.log('Exists in local storage!');
+
+            const coin = JSON.parse(localStorage.getItem(id));
+            if (isTimeDifferenceGreaterThanTwoMinutes(coin.date)) {
+                console.log('Coin is old! get new mother fucker.');
+                selectedCoin = await fetchSpecificCoin(id);
+                saveInLocalStorage(selectedCoin);
+            } else {
+                console.log('This coin is fresh yo!');
+                selectedCoin = coin;
+            }
+        } else {
+            console.log('Dayum, no coin at all. Getting from the server.');
+            selectedCoin = await fetchSpecificCoin(id);
+            console.log(selectedCoin.id);
+            saveInLocalStorage(selectedCoin);
+        }
+
+        const childEl = document.getElementById(`childContent-${id}`);
+        childEl.innerHTML = buildCoinDeatils(selectedCoin);
+    } catch (err) {
+        console.log(err);
 
     }
 }
 
+function saveInLocalStorage(coin: AllCoinsInfo): void {
+    coin.date = new Date();
+    localStorage.setItem(coin.id, JSON.stringify(coin));
+}
 
-async function fn(id: any) {
+async function fetchSpecificCoin(id: string): Promise<AllCoinsInfo> {
+    const res = await fetch(`https://api.coingecko.com/api/v3/coins/${id}`)
+    const data = await res.json()
+    return new AllCoinsInfo(data.image.small, data.market_data.current_price.usd, data.market_data.current_price.eur, data.market_data.current_price.ils, data.id)
+}
 
-    try {
-        const res = await fetch(`https://api.coingecko.com/api/v3/coins/${id}`)
-        const data = await res.json()
+function isTimeDifferenceGreaterThanTwoMinutes(date: string): boolean {
+    const past = new Date(date).getTime();
+    const twoMins = 1000 * 60 * 2;
+    return (new Date().getTime() - past) > twoMins;
+}
 
-        const selectedCoin = new AllCoinsInfo(data.image.small, data.market_data.current_price.usd, data.market_data.current_price.eur, data.market_data.current_price.ils)
+getApiOnLoad() // Running the Get Api Function
 
-        const childEl = document.getElementById(`childContent-${id}`);
-        const text = `
+
+
+// HTML Templating \\
+const buildCoinDeatils = (selectedCoin) => `
         <img src="${selectedCoin.img}" alt="">
         <br>
         
@@ -111,18 +134,33 @@ async function fn(id: any) {
         </p
         `
 
-        childEl.innerHTML = text;
-    }
 
-    catch (err) {
-        console.log(err);
-
-    }
-}
-
-
-
-
-
-getApiOnLoad() // Running the Get Api Function
-
+const buildCardHTML = (coin, i) =>
+    `<div id="${coin.name}" class="col-4">
+                    <div class="card" style="width: 18rem;">
+                        <div class="card-body">
+    
+                            <div class="d-flex justify-content-between"> 
+                            <h5 class="card-title">${coin.symbol}</h5> 
+                                <label class="switch">
+                                <input type="checkbox" onclick=>
+                                <span class="slider round"></span>
+                                </label>
+                            </div>
+    
+                            <p class="card-text">${coin.name}</p>
+                            
+                            <p>
+                              <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample${coin.id}" aria-expanded="false" aria-controls="collapseExample">
+                                 More Info
+                              </button>
+                            </p>
+    
+                            <div class="collapse" id="collapseExample${coin.id}">
+                                <div class="card card-body" id="childContent-${coin.id}">
+                                </div>
+                            </div>
+                        
+                        </div>
+                    </div>
+                </div>`
