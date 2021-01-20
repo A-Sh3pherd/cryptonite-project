@@ -8,17 +8,13 @@ let allCoins: Coin[];
 
 
 async function getApiOnLoad(): Promise<void> {
-
     try {
         const res = await fetch('https://api.coingecko.com/api/v3/coins/list') // Fetching the list of all coins
         allCoins = await res.json() // set AllCoins with the api Data we fetched
         setCards() // Setting the card with the wanted data
-    }
-
-    catch (err) {
+    } catch (err) {
         console.log(err);
     }
-
 }
 
 function setCards() { // Sets the cards 
@@ -27,14 +23,12 @@ function setCards() { // Sets the cards
     for (let i = 0; i < allCoins.length; i++) { // Looping through all Coins and making a card with each one 
         if (i <= 100) { //~ Limited for the first 100 coins at the moment
             const cardDiv = document.createElement('div')
-            cardDiv.className = 'col-4'
+            cardDiv.className = 'col-lg-4 col-md-6 col-sm-6 xsm-12'
             cardDiv.innerHTML = buildCardHTML(allCoins[i], i)
             cardDiv.addEventListener('shown.bs.collapse', () => getSpecificCoin(allCoins[i].id));
             cardsContainer?.appendChild(cardDiv)
         }
-
     }
-
 }
 
 
@@ -53,21 +47,7 @@ class AllCoinsInfo {
         this.eur = eur
         this.ils = ils
     }
-
-    print() {
-        console.log(`
-        image Url: ${this.img}
-        Usd price: ${this.usd}
-        Eur Price: ${this.eur}
-        Ils Price: ${this.ils}
-        `);
-    }
-
-    storage() {
-
-    }
-
-}
+} // Class Ends here
 
 
 async function getSpecificCoin(id: string) {
@@ -76,8 +56,8 @@ async function getSpecificCoin(id: string) {
 
         if (localStorage.getItem(id)) {
             console.log('Exists in local storage!');
-
             const coin = JSON.parse(localStorage.getItem(id));
+
             if (isTimeDifferenceGreaterThanTwoMinutes(coin.date)) {
                 console.log('Coin is old! get new mother fucker.');
                 selectedCoin = await fetchSpecificCoin(id);
@@ -97,7 +77,6 @@ async function getSpecificCoin(id: string) {
         childEl.innerHTML = buildCoinDeatils(selectedCoin);
     } catch (err) {
         console.log(err);
-
     }
 }
 
@@ -136,7 +115,7 @@ const buildCoinDeatils = (selectedCoin) => `
 
 
 const buildCardHTML = (coin, i) =>
-    `<div id="${coin.name}" class="col-4">
+    `<div id="${coin.name}">
                     <div class="card" style="width: 18rem;">
                         <div class="card-body">
     

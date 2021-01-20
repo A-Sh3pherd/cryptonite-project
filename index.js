@@ -66,7 +66,7 @@ function setCards() {
     var _loop_1 = function (i) {
         if (i <= 100) { //~ Limited for the first 100 coins at the moment
             var cardDiv = document.createElement('div');
-            cardDiv.className = 'col-4';
+            cardDiv.className = 'col-lg-4 col-md-6 col-sm-6 xsm-12';
             cardDiv.innerHTML = buildCardHTML(allCoins[i], i);
             cardDiv.addEventListener('shown.bs.collapse', function () { return getSpecificCoin(allCoins[i].id); });
             cardsContainer === null || cardsContainer === void 0 ? void 0 : cardsContainer.appendChild(cardDiv);
@@ -84,13 +84,8 @@ var AllCoinsInfo = /** @class */ (function () {
         this.eur = eur;
         this.ils = ils;
     }
-    AllCoinsInfo.prototype.print = function () {
-        console.log("\n        image Url: " + this.img + "\n        Usd price: " + this.usd + "\n        Eur Price: " + this.eur + "\n        Ils Price: " + this.ils + "\n        ");
-    };
-    AllCoinsInfo.prototype.storage = function () {
-    };
     return AllCoinsInfo;
-}());
+}()); // Class Ends here
 function getSpecificCoin(id) {
     return __awaiter(this, void 0, void 0, function () {
         var selectedCoin, coin, childEl, err_2;
@@ -164,5 +159,5 @@ getApiOnLoad(); // Running the Get Api Function
 // HTML Templating \\
 var buildCoinDeatils = function (selectedCoin) { return "\n        <img src=\"" + selectedCoin.img + "\" alt=\"\">\n        <br>\n        \n        <p>\n        <strong>Usd Price:</strong> " + selectedCoin.usd + " $<br> \n        <strong>Eur Price:</strong> " + selectedCoin.eur + " \u20AC<br>\n        <strong>Ils Price:</strong> " + selectedCoin.ils + " \u20AA\n        </p\n        "; };
 var buildCardHTML = function (coin, i) {
-    return "<div id=\"" + coin.name + "\" class=\"col-4\">\n                    <div class=\"card\" style=\"width: 18rem;\">\n                        <div class=\"card-body\">\n    \n                            <div class=\"d-flex justify-content-between\"> \n                            <h5 class=\"card-title\">" + coin.symbol + "</h5> \n                                <label class=\"switch\">\n                                <input type=\"checkbox\" onclick=>\n                                <span class=\"slider round\"></span>\n                                </label>\n                            </div>\n    \n                            <p class=\"card-text\">" + coin.name + "</p>\n                            \n                            <p>\n                              <button class=\"btn btn-primary\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#collapseExample" + coin.id + "\" aria-expanded=\"false\" aria-controls=\"collapseExample\">\n                                 More Info\n                              </button>\n                            </p>\n    \n                            <div class=\"collapse\" id=\"collapseExample" + coin.id + "\">\n                                <div class=\"card card-body\" id=\"childContent-" + coin.id + "\">\n                                </div>\n                            </div>\n                        \n                        </div>\n                    </div>\n                </div>";
+    return "<div id=\"" + coin.name + "\">\n                    <div class=\"card\" style=\"width: 18rem;\">\n                        <div class=\"card-body\">\n    \n                            <div class=\"d-flex justify-content-between\"> \n                            <h5 class=\"card-title\">" + coin.symbol + "</h5> \n                                <label class=\"switch\">\n                                <input type=\"checkbox\" onclick=>\n                                <span class=\"slider round\"></span>\n                                </label>\n                            </div>\n    \n                            <p class=\"card-text\">" + coin.name + "</p>\n                            \n                            <p>\n                              <button class=\"btn btn-primary\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#collapseExample" + coin.id + "\" aria-expanded=\"false\" aria-controls=\"collapseExample\">\n                                 More Info\n                              </button>\n                            </p>\n    \n                            <div class=\"collapse\" id=\"collapseExample" + coin.id + "\">\n                                <div class=\"card card-body\" id=\"childContent-" + coin.id + "\">\n                                </div>\n                            </div>\n                        \n                        </div>\n                    </div>\n                </div>";
 };
