@@ -155,9 +155,117 @@ function isTimeDifferenceGreaterThanTwoMinutes(date) {
     var twoMins = 1000 * 60 * 2;
     return (new Date().getTime() - past) > twoMins;
 }
+// Favorite Coins Section \\ 
+var favCoins = new Array();
+function favoriteCoins(id) {
+    var checkbox = document.getElementById("checkbox-" + id);
+    if (checkbox.checked == true) {
+        console.log("Coins on fav: " + favCoins);
+        if (favCoins.length >= 5) { // If more than 5 Favorite coins
+            alert('Sorry, Too many Favorites');
+            checkbox.checked = false;
+        }
+        else {
+            favCoins.push(id);
+            console.log(id + ' Has been added to favorite');
+        }
+    }
+    else {
+        console.log(id + ' Has Been Removed From Favorite Coins!');
+    }
+} // Favorite Coins Section Ends Here
+function liveReportsPage() {
+    return __awaiter(this, void 0, void 0, function () {
+        var cardsContainer, res, data, err_3;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    cardsContainer = document.getElementById('cards-container');
+                    cardsContainer.innerHTML = '';
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 4, , 5]);
+                    return [4 /*yield*/, fetch("https://min-api.cryptocompare.com/data/pricemulti?fsyms=" + favCoins[0] + "," + favCoins[1] + "," + favCoins[2] + "," + favCoins[3] + ", " + favCoins[4] + "&tsyms=USD")]; // Fetch price of Fav coins
+                case 2:
+                    res = _a.sent() // Fetch price of Fav coins
+                    ;
+                    return [4 /*yield*/, res.json()];
+                case 3:
+                    data = _a.sent();
+                    console.log(data);
+                    return [3 /*break*/, 5];
+                case 4:
+                    err_3 = _a.sent();
+                    console.error(err_3);
+                    return [3 /*break*/, 5];
+                case 5: return [2 /*return*/];
+            }
+        });
+    });
+}
+// const liveChartCheck = function () {
+//     var options = {
+//         exportEnabled: true,
+//         animationEnabled: true,
+//         title: {
+//             text: "Units Sold VS Profit"
+//         },
+//         subtitles: [{
+//             text: "Click Legend to Hide or Unhide Data Series"
+//         }],
+//         axisY: {
+//             title: "Coin Price",
+//             titleFontColor: "#4F81BC",
+//             lineColor: "#4F81BC",
+//             labelFontColor: "#4F81BC",
+//             tickColor: "#4F81BC"
+//         },
+//         toolTip: {
+//             shared: true
+//         },
+//         legend: {
+//             cursor: "pointer",
+//             itemclick: toggleDataSeries
+//         },
+//         data: [{
+//             type: "spline",
+//             name: "Units Sold",
+//             showInLegend: true,
+//             xValueFormatString: "MMM YYYY",
+//             yValueFormatString: "#,##0 Units",
+//             dataPoints: [
+//                 { y: 120 }, //price height
+//                 { y: 135 },
+//                 { y: 144 },
+//                 { y: 103 },
+//                 { y: 93 },
+//                 { y: 129 },
+//                 { y: 143 },
+//                 { y: 156 },
+//                 { y: 122 },
+//                 { y: 106 },
+//                 { y: 137 },
+//                 { y: 142 }
+//             ]
+//         },
+//         ]
+//     };
+//     $("#chartContainer").CanvasJSChart(options);
+//     function toggleDataSeries(e) {
+//         if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+//             e.dataSeries.visible = false;
+//         } else {
+//             e.dataSeries.visible = true;
+//         }
+//         e.chart.render();
+//     }
+// }
 getApiOnLoad(); // Running the Get Api Function
 // HTML Templating \\
 var buildCoinDeatils = function (selectedCoin) { return "\n        <img src=\"" + selectedCoin.img + "\" alt=\"\">\n        <br>\n        \n        <p>\n        <strong>Usd Price:</strong> " + selectedCoin.usd + " $<br> \n        <strong>Eur Price:</strong> " + selectedCoin.eur + " \u20AC<br>\n        <strong>Ils Price:</strong> " + selectedCoin.ils + " \u20AA\n        </p\n        "; };
 var buildCardHTML = function (coin, i) {
-    return "<div id=\"" + coin.name + "\">\n                    <div class=\"card\" style=\"width: 18rem;\">\n                        <div class=\"card-body\">\n    \n                            <div class=\"d-flex justify-content-between\"> \n                            <h5 class=\"card-title\">" + coin.symbol + "</h5> \n                                <label class=\"switch\">\n                                <input type=\"checkbox\" onclick=>\n                                <span class=\"slider round\"></span>\n                                </label>\n                            </div>\n    \n                            <p class=\"card-text\">" + coin.name + "</p>\n                            \n                            <p>\n                              <button class=\"btn btn-primary\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#collapseExample" + coin.id + "\" aria-expanded=\"false\" aria-controls=\"collapseExample\">\n                                 More Info\n                              </button>\n                            </p>\n    \n                            <div class=\"collapse\" id=\"collapseExample" + coin.id + "\">\n                                <div class=\"card card-body\" id=\"childContent-" + coin.id + "\">\n                                </div>\n                            </div>\n                        \n                        </div>\n                    </div>\n                </div>";
+    return "<div id=\"" + coin.name + "\">\n                    <div class=\"card\" style=\"width: 18rem;\">\n                        <div class=\"card-body\">\n    \n                            <div class=\"d-flex justify-content-between\"> \n                            <h5 class=\"card-title\">" + coin.symbol + "</h5> \n                                <label class=\"switch\">\n                                <input id=\"checkbox-" + coin.symbol + "\" type=\"checkbox\"  onclick=favoriteCoins(\"" + coin.symbol + "\")>\n                                <span class=\"slider round\"></span>\n                                </label>\n                            </div>\n    \n                            <p class=\"card-text\">" + coin.name + "</p>\n                            \n                            <p>\n                              <button class=\"btn btn-primary\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#collapseExample" + coin.id + "\" aria-expanded=\"false\" aria-controls=\"collapseExample\">\n                                 More Info\n                              </button>\n                            </p>\n    \n                            <div class=\"collapse\" id=\"collapseExample" + coin.id + "\">\n                                <div class=\"card card-body\" id=\"childContent-" + coin.id + "\">\n                                </div>\n                            </div>\n                        \n                        </div>\n                    </div>\n                </div>";
+};
+var buildModalHTML = function (id, favCoins) {
+    "\n  ";
 };

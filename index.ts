@@ -97,6 +97,114 @@ function isTimeDifferenceGreaterThanTwoMinutes(date: string): boolean {
     return (new Date().getTime() - past) > twoMins;
 }
 
+// Favorite Coins Section \\ 
+let favCoins = new Array()
+
+function favoriteCoins(id:any) {
+    const checkbox: any = document.getElementById(`checkbox-${id}`)
+
+    if (checkbox.checked == true) {
+        console.log(`Coins on fav: ${favCoins}`);
+        
+        if (favCoins.length >= 5) {  // If more than 5 Favorite coins
+            alert('Sorry, Too many Favorites')
+            checkbox.checked = false 
+            
+        } else {
+            favCoins.push(id)
+            console.log(id + ' Has been added to favorite');
+        }
+    } else {
+        
+        console.log(id + ' Has Been Removed From Favorite Coins!');
+
+    }
+
+} // Favorite Coins Section Ends Here
+
+async function liveReportsPage()  {
+    const cardsContainer = document.getElementById('cards-container')
+    cardsContainer.innerHTML = ''
+
+    try {
+        const res = await fetch(`https://min-api.cryptocompare.com/data/pricemulti?fsyms=${favCoins[0]},${favCoins[1]},${favCoins[2]},${favCoins[3]}, ${favCoins[4]}&tsyms=USD`) // Fetch price of Fav coins
+        const data = await res.json()
+        console.log(data);
+        
+
+    } catch(err) {
+        console.error(err)
+    }
+    
+
+    
+    
+}
+
+
+// const liveChartCheck = function () {
+
+//     var options = {
+//         exportEnabled: true,
+//         animationEnabled: true,
+//         title: {
+//             text: "Units Sold VS Profit"
+//         },
+//         subtitles: [{
+//             text: "Click Legend to Hide or Unhide Data Series"
+//         }],
+
+//         axisY: {
+//             title: "Coin Price",
+//             titleFontColor: "#4F81BC",
+//             lineColor: "#4F81BC",
+//             labelFontColor: "#4F81BC",
+//             tickColor: "#4F81BC"
+//         },
+
+//         toolTip: {
+//             shared: true
+//         },
+//         legend: {
+//             cursor: "pointer",
+//             itemclick: toggleDataSeries
+//         },
+//         data: [{
+//             type: "spline",
+//             name: "Units Sold",
+//             showInLegend: true,
+//             xValueFormatString: "MMM YYYY",
+//             yValueFormatString: "#,##0 Units",
+//             dataPoints: [
+//                 { y: 120 }, //price height
+//                 { y: 135 },
+//                 { y: 144 },
+//                 { y: 103 },
+//                 { y: 93 },
+//                 { y: 129 },
+//                 { y: 143 },
+//                 { y: 156 },
+//                 { y: 122 },
+//                 { y: 106 },
+//                 { y: 137 },
+//                 { y: 142 }
+//             ]
+//         },
+//         ]
+//     };
+//     $("#chartContainer").CanvasJSChart(options);
+
+//     function toggleDataSeries(e) {
+//         if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+//             e.dataSeries.visible = false;
+//         } else {
+//             e.dataSeries.visible = true;
+//         }
+//         e.chart.render();
+//     }
+
+// }
+
 getApiOnLoad() // Running the Get Api Function
 
 
@@ -122,7 +230,7 @@ const buildCardHTML = (coin, i) =>
                             <div class="d-flex justify-content-between"> 
                             <h5 class="card-title">${coin.symbol}</h5> 
                                 <label class="switch">
-                                <input type="checkbox" onclick=>
+                                <input id="checkbox-${coin.symbol}" type="checkbox"  onclick=favoriteCoins("${coin.symbol}")>
                                 <span class="slider round"></span>
                                 </label>
                             </div>
@@ -143,3 +251,9 @@ const buildCardHTML = (coin, i) =>
                         </div>
                     </div>
                 </div>`
+
+
+const buildModalHTML = (id: string, favCoins: any) => {
+    `
+  `
+}
