@@ -34,8 +34,22 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+// AllCoinsInfo Class 
+var AllCoinsInfo = /** @class */ (function () {
+    function AllCoinsInfo(img, usd, eur, ils, id) {
+        this.id = id;
+        this.img = img;
+        this.usd = usd;
+        this.eur = eur;
+        this.ils = ils;
+    }
+    return AllCoinsInfo;
+}()); // Class Ends here
 ;
+var activeContainer = 'cards-container';
 var allCoins;
+var Swal;
+// This Function runs on load
 function getApiOnLoad() {
     return __awaiter(this, void 0, void 0, function () {
         var res, err_1;
@@ -61,32 +75,18 @@ function getApiOnLoad() {
         });
     });
 }
+// Sets the cards ~~ in getApiOnLoad()
 function setCards() {
     var cardsContainer = document.getElementById('cards-container');
-    var _loop_1 = function (i) {
-        if (i <= 100) { //~ Limited for the first 100 coins at the moment
-            var cardDiv = document.createElement('div');
-            cardDiv.className = 'col-lg-4 col-md-6 col-sm-6 xsm-12';
-            cardDiv.innerHTML = buildCardHTML(allCoins[i], i);
-            cardDiv.addEventListener('shown.bs.collapse', function () { return getSpecificCoin(allCoins[i].id); });
-            cardsContainer === null || cardsContainer === void 0 ? void 0 : cardsContainer.appendChild(cardDiv);
+    for (var i = 0; i < allCoins.length; i++) { // Looping through all Coins and making a card with each one 
+        if (i <= 150) { //~ Limited for the first 100 coins at the moment
+            var cardDiv = buildCardHTML(allCoins[i], i);
+            cardsContainer.append(cardDiv);
         }
-    };
-    for (var i = 0; i < allCoins.length; i++) {
-        _loop_1(i);
     }
 }
-var AllCoinsInfo = /** @class */ (function () {
-    function AllCoinsInfo(img, usd, eur, ils, id) {
-        this.id = id;
-        this.img = img;
-        this.usd = usd;
-        this.eur = eur;
-        this.ils = ils;
-    }
-    return AllCoinsInfo;
-}()); // Class Ends here
-function getSpecificCoin(id) {
+// Check if on LocalStorage, if not- fetch card and build card
+function getSpecificCoin(id, symbol) {
     return __awaiter(this, void 0, void 0, function () {
         var selectedCoin, coin, childEl, err_2;
         return __generator(this, function (_a) {
@@ -95,31 +95,37 @@ function getSpecificCoin(id) {
                     _a.trys.push([0, 7, , 8]);
                     selectedCoin = void 0;
                     if (!localStorage.getItem(id)) return [3 /*break*/, 4];
-                    console.log('Exists in local storage!');
+                    console.log('Exists in local storage!'); // Existance Log
                     coin = JSON.parse(localStorage.getItem(id));
                     if (!isTimeDifferenceGreaterThanTwoMinutes(coin.date)) return [3 /*break*/, 2];
-                    console.log('Coin is old! get new mother fucker.');
+                    console.log('Coin is old! get new mother fucker.'); // Old coin Log
                     return [4 /*yield*/, fetchSpecificCoin(id)];
                 case 1:
-                    selectedCoin = _a.sent();
-                    saveInLocalStorage(selectedCoin);
+                    selectedCoin = _a.sent(); // fetch the coin data again from the api
+                    saveInLocalStorage(selectedCoin); // Save the coin in the local storage
                     return [3 /*break*/, 3];
                 case 2:
-                    console.log('This coin is fresh yo!');
-                    selectedCoin = coin;
+                    console.log('This coin is fresh yo!'); // Fresh coin Log
+                    selectedCoin = coin; // Set selectedCoin with the value of coijn
                     _a.label = 3;
                 case 3: return [3 /*break*/, 6];
                 case 4:
-                    console.log('Dayum, no coin at all. Getting from the server.');
+                    console.log('Dayum, no coin at all. Getting from the server.'); // No coins at Local Storage Log
                     return [4 /*yield*/, fetchSpecificCoin(id)];
                 case 5:
-                    selectedCoin = _a.sent();
-                    console.log(selectedCoin.id);
-                    saveInLocalStorage(selectedCoin);
+                    selectedCoin = _a.sent(); // Fetch the specific coin data from the api 
+                    console.log(selectedCoin.id); // Log the name of the selected Coin added to the local storage
+                    saveInLocalStorage(selectedCoin); // Save the selectedCoin in the localStorage
                     _a.label = 6;
                 case 6:
+                    $(document.getElementById('loader ' + id)).fadeOut('slow', function () {
+                        document.getElementById('loader ' + id).remove(); // finish the Loader when data is up
+                    });
+                    $("#loader-" + symbol).fadeOut('slow', function () {
+                        $("#loader-" + symbol).remove();
+                    });
                     childEl = document.getElementById("childContent-" + id);
-                    childEl.innerHTML = buildCoinDeatils(selectedCoin);
+                    childEl.innerHTML = buildCoinDeatils(selectedCoin); // Set the inner Html of the card with the selectedCoin details
                     return [3 /*break*/, 8];
                 case 7:
                     err_2 = _a.sent();
@@ -130,6 +136,7 @@ function getSpecificCoin(id) {
         });
     });
 }
+// Save to localStorage Function
 function saveInLocalStorage(coin) {
     coin.date = new Date();
     localStorage.setItem(coin.id, JSON.stringify(coin));
@@ -160,10 +167,10 @@ var favCoins = new Array();
 function favoriteCoins(id) {
     var checkbox = document.getElementById("checkbox-" + id);
     if (checkbox.checked == true) {
-        console.log("Coins on fav: " + favCoins);
         if (favCoins.length >= 5) { // If more than 5 Favorite coins
-            alert('Sorry, Too many Favorites');
-            checkbox.checked = false;
+            favCoins.push(id);
+            tooManyCoins();
+            return;
         }
         else {
             favCoins.push(id);
@@ -171,101 +178,293 @@ function favoriteCoins(id) {
         }
     }
     else {
+        favCoins = favCoins.filter(function (coin) { return coin !== id; });
         console.log(id + ' Has Been Removed From Favorite Coins!');
     }
 } // Favorite Coins Section Ends Here
 function liveReportsPage() {
     return __awaiter(this, void 0, void 0, function () {
-        var cardsContainer, res, data, err_3;
+        var cardsContainer;
+        return __generator(this, function (_a) {
+            cardsContainer = document.getElementById('cards-container');
+            liveChartCheck();
+            return [2 /*return*/];
+        });
+    });
+}
+function getMultipleCoinsData() {
+    return __awaiter(this, void 0, void 0, function () {
+        var res, data, err_3;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    cardsContainer = document.getElementById('cards-container');
-                    cardsContainer.innerHTML = '';
-                    _a.label = 1;
-                case 1:
-                    _a.trys.push([1, 4, , 5]);
+                    _a.trys.push([0, 3, , 4]);
                     return [4 /*yield*/, fetch("https://min-api.cryptocompare.com/data/pricemulti?fsyms=" + favCoins[0] + "," + favCoins[1] + "," + favCoins[2] + "," + favCoins[3] + ", " + favCoins[4] + "&tsyms=USD")]; // Fetch price of Fav coins
-                case 2:
+                case 1:
                     res = _a.sent() // Fetch price of Fav coins
                     ;
                     return [4 /*yield*/, res.json()];
-                case 3:
+                case 2:
                     data = _a.sent();
-                    console.log(data);
-                    return [3 /*break*/, 5];
-                case 4:
+                    return [2 /*return*/, data];
+                case 3:
                     err_3 = _a.sent();
                     console.error(err_3);
-                    return [3 /*break*/, 5];
-                case 5: return [2 /*return*/];
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
             }
         });
     });
 }
-// const liveChartCheck = function () {
-//     var options = {
-//         exportEnabled: true,
-//         animationEnabled: true,
-//         title: {
-//             text: "Units Sold VS Profit"
-//         },
-//         subtitles: [{
-//             text: "Click Legend to Hide or Unhide Data Series"
-//         }],
-//         axisY: {
-//             title: "Coin Price",
-//             titleFontColor: "#4F81BC",
-//             lineColor: "#4F81BC",
-//             labelFontColor: "#4F81BC",
-//             tickColor: "#4F81BC"
-//         },
-//         toolTip: {
-//             shared: true
-//         },
-//         legend: {
-//             cursor: "pointer",
-//             itemclick: toggleDataSeries
-//         },
-//         data: [{
-//             type: "spline",
-//             name: "Units Sold",
-//             showInLegend: true,
-//             xValueFormatString: "MMM YYYY",
-//             yValueFormatString: "#,##0 Units",
-//             dataPoints: [
-//                 { y: 120 }, //price height
-//                 { y: 135 },
-//                 { y: 144 },
-//                 { y: 103 },
-//                 { y: 93 },
-//                 { y: 129 },
-//                 { y: 143 },
-//                 { y: 156 },
-//                 { y: 122 },
-//                 { y: 106 },
-//                 { y: 137 },
-//                 { y: 142 }
-//             ]
-//         },
-//         ]
-//     };
-//     $("#chartContainer").CanvasJSChart(options);
-//     function toggleDataSeries(e) {
-//         if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
-//             e.dataSeries.visible = false;
-//         } else {
-//             e.dataSeries.visible = true;
-//         }
-//         e.chart.render();
-//     }
-// }
+var liveChartCheck = function () {
+    return __awaiter(this, void 0, void 0, function () {
+        function toggleDataSeries(e) {
+            if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                e.dataSeries.visible = false;
+            }
+            else {
+                e.dataSeries.visible = true;
+            }
+            e.chart.render();
+        }
+        function updateChart(count) {
+            return __awaiter(this, void 0, void 0, function () {
+                var _loop_1, i;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            count = count || 1;
+                            _loop_1 = function () {
+                                var yValues, numberOfCoin;
+                                return __generator(this, function (_a) {
+                                    switch (_a.label) {
+                                        case 0:
+                                            time.setTime(time.getTime() + updateInterval);
+                                            return [4 /*yield*/, getMultipleCoinsData()
+                                                // pushing the new values
+                                            ];
+                                        case 1:
+                                            yValues = _a.sent();
+                                            numberOfCoin = 0;
+                                            fullData.forEach(function (coin) {
+                                                coin.dataPoints.push({
+                                                    x: time.getTime(),
+                                                    y: yValues[coin.name].USD
+                                                });
+                                                options.data[numberOfCoin].legendText = coin.name + " - " + yValues[coin.name].USD + "$";
+                                                numberOfCoin++;
+                                            });
+                                            return [2 /*return*/];
+                                    }
+                                });
+                            };
+                            i = 0;
+                            _a.label = 1;
+                        case 1:
+                            if (!(i < count)) return [3 /*break*/, 4];
+                            return [5 /*yield**/, _loop_1()];
+                        case 2:
+                            _a.sent();
+                            _a.label = 3;
+                        case 3:
+                            i++;
+                            return [3 /*break*/, 1];
+                        case 4:
+                            // updating legend text with  updated with y Value 
+                            $("#chartContainer").CanvasJSChart().render();
+                            return [2 /*return*/];
+                    }
+                });
+            });
+        }
+        var data, fullData, coin, options, chart, updateInterval, time;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, getMultipleCoinsData()];
+                case 1:
+                    data = _a.sent();
+                    fullData = [];
+                    if (data.Response) {
+                        alert('יש לבחור לפחות מטבעה אחד לצפייה בלייב רפורטס');
+                        document.getElementById('nav-home').click();
+                        return [2 /*return*/];
+                    }
+                    for (coin in data) {
+                        console.log(coin);
+                        fullData.push({
+                            type: "line",
+                            xValueType: "dateTime",
+                            yValueFormatString: "###.########$",
+                            xValueFormatString: "hh:mm:ss TT",
+                            showInLegend: true,
+                            name: coin,
+                            dataPoints: []
+                        });
+                    }
+                    options = {
+                        title: {
+                            text: "Cryptonite Live Chart"
+                        },
+                        axisX: {
+                            title: "Chart updates every 2 secs"
+                        },
+                        axisY: {
+                            suffix: "USD"
+                        },
+                        toolTip: {
+                            shared: true
+                        },
+                        legend: {
+                            cursor: "pointer",
+                            verticalAlign: "top",
+                            fontSize: 22,
+                            fontColor: "dimGrey",
+                            itemclick: toggleDataSeries
+                        },
+                        data: fullData
+                    };
+                    chart = $("#chartContainer").CanvasJSChart(options);
+                    updateInterval = 2000;
+                    time = new Date;
+                    // generates first set of dataPoints 
+                    updateChart(10);
+                    setInterval(function () { updateChart(1); }, updateInterval);
+                    return [2 /*return*/];
+            }
+        });
+    });
+};
 getApiOnLoad(); // Running the Get Api Function
 // HTML Templating \\
 var buildCoinDeatils = function (selectedCoin) { return "\n        <img src=\"" + selectedCoin.img + "\" alt=\"\">\n        <br>\n        \n        <p>\n        <strong>Usd Price:</strong> " + selectedCoin.usd + " $<br> \n        <strong>Eur Price:</strong> " + selectedCoin.eur + " \u20AC<br>\n        <strong>Ils Price:</strong> " + selectedCoin.ils + " \u20AA\n        </p\n        "; };
+// Build cards HTML
 var buildCardHTML = function (coin, i) {
-    return "<div id=\"" + coin.name + "\">\n                    <div class=\"card\" style=\"width: 18rem;\">\n                        <div class=\"card-body\">\n    \n                            <div class=\"d-flex justify-content-between\"> \n                            <h5 class=\"card-title\">" + coin.symbol + "</h5> \n                                <label class=\"switch\">\n                                <input id=\"checkbox-" + coin.symbol + "\" type=\"checkbox\"  onclick=favoriteCoins(\"" + coin.symbol + "\")>\n                                <span class=\"slider round\"></span>\n                                </label>\n                            </div>\n    \n                            <p class=\"card-text\">" + coin.name + "</p>\n                            \n                            <p>\n                              <button class=\"btn btn-primary\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#collapseExample" + coin.id + "\" aria-expanded=\"false\" aria-controls=\"collapseExample\">\n                                 More Info\n                              </button>\n                            </p>\n    \n                            <div class=\"collapse\" id=\"collapseExample" + coin.id + "\">\n                                <div class=\"card card-body\" id=\"childContent-" + coin.id + "\">\n                                </div>\n                            </div>\n                        \n                        </div>\n                    </div>\n                </div>";
+    var cardDiv = document.createElement('div');
+    cardDiv.id = coin.symbol;
+    cardDiv.className += "col-xl-4 col-lg-6 col-md-12 col-sm-12 xsm-12 mt-2 card-fade";
+    cardDiv.innerHTML = "\n    \n                    <div class=\"card\" style=\"width: 18rem;\">\n                        <div class=\"card-body\">\n    \n                            <div class=\"d-flex justify-content-between\"> \n                            <h5 class=\"card-title\">" + coin.symbol + "</h5> \n                                <label class=\"switch\">\n                                <input id=\"checkbox-" + coin.symbol + "\" type=\"checkbox\"  onclick=favoriteCoins(\"" + coin.symbol + "\")>\n                                <span class=\"slider round\" slider-coin=\"" + coin.symbol + "\"></span>\n                                </label>\n                            </div>\n    \n                            <p class=\"card-text\">" + coin.name + "</p>\n                            \n                            <p>\n                              <button class=\"btn btn-primary\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#collapseExample" + coin.id + "\" aria-expanded=\"false\" aria-controls=\"collapseExample\">\n                                 More Info\n                              </button>\n                            </p>\n    \n                            <div class=\"collapse\" id=\"collapseExample" + coin.id + "\">\n                                <div class=\"card card-body\" id=\"childContent-" + coin.id + "\">\n                                </div>\n                            </div>\n                        \n                        </div>\n                    </div>\n                                        ";
+    cardDiv.addEventListener('show.bs.collapse', function () { loader(coin.symbol); });
+    cardDiv.addEventListener('show.bs.collapse', function () { getSpecificCoin(coin.id, coin.symbol); });
+    return cardDiv;
 };
-var buildModalHTML = function (id, favCoins) {
-    "\n  ";
+var buildAboutPage = function () {
+    var about = document.querySelector('.about-container');
+    about.innerHTML = "\n    <div class=\"row\">\n      <div class=\"col-auto\">\n        <img id=\"about-photo\" src=\"/imgs/about-photo.png\" alt=\"\">\n      </div>\n      <div class=\"col-auto mt-4\">\n        <p style=\"margin-left: 100px;\">Hello, My name is Alon Shefer and im the developer of this project.</p>\n        <p style=\"margin-left: 130px;\">I'm 25 years old, i live happily ever-after in Tel-aviv.</p>\n        <p style=\"margin-left: 150px;\">My favorite Quote is: \u201CIt's the children the world almost breaks who grow up to save it.\u201D</p>\n        <p style=\"margin-left: 170px;\">I truly beleave that with Hard work- EVERYTHING is possible.</p>\n        <p style=\"margin-left: 160px;\">and that's what guided me throughout this project.</p>\n        <p style=\"margin-left: 155px;\">Now, Sit back and find out what info your looking for,</p>\n        <p style=\"margin-left: 140px;\">And we will take care of the rest.</p>\n      </div>\n    </div>\n\n    <div class=\"\">\n      <div class=\" mt-5\">\n        <p class=\"about-info\">In this project, my goal was to make the Crypto-Currency trading-life easier.</p>\n        <p class=\"about-info\">In this website you can find information about all the crypto coins in the world !</p>\n        <p class=\"about-info\">By selecting your favorite coins you can view a real-time data about the selected coins. </p>\n        <p class=\"about-info\"> </p>\n        <p class=\"about-info\"> </p>\n      </div>\n    </div>\n    ";
 };
+// Loader Function
+function loader(element) {
+    var fadeContainer = document.createElement("div"); // creating div
+    fadeContainer.classList.add("loader-container-fade"); //set div class to loader-container-fade
+    fadeContainer.id = 'loader-' + element; // gives a special id to each loader
+    var loaderContainer = document.createElement("div"); // creating a iv
+    loaderContainer.classList.add("loader-container"); // set div class to loader-container
+    fadeContainer.append(loaderContainer); // put the loader container inside the fade container
+    var loaderTemplate = document.createElement("div"); // creating div
+    loaderTemplate.classList.add("loader"); // set div class to loader
+    loaderContainer.append(loaderTemplate); // put the loaderTemplate inside the loaderContainer
+    $(fadeContainer).fadeIn(); // fade in the container
+    try {
+        document.getElementById(element).children[0].append(fadeContainer);
+    }
+    catch (error) {
+        console.log(error);
+    }
+}
+// Container Change Function
+function changeContainer(caller) {
+    var container = $(caller).attr('container');
+    $("#" + activeContainer).fadeOut(1000);
+    $("#" + container).fadeIn(2000);
+    activeContainer = container;
+}
+var checked = 0;
+function tooManyCoins() {
+    return __awaiter(this, void 0, void 0, function () {
+        var formValues;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    checked = 0;
+                    return [4 /*yield*/, Swal.fire({
+                            title: 'Multiple inputs',
+                            html: "\n          <input type=\"checkbox\" id=\"swal-input1\" name=\"" + favCoins[0] + "\" value=\"" + favCoins[0] + "\" onclick=\"checkNumberOfCheckedCoins(this)\">\n          <label for=\"" + favCoins[0] + "\"> " + favCoins[0] + "</label><br>\n\n          <input type=\"checkbox\" id=\"swal-input2\" name=\"" + favCoins[1] + "\" value=\"" + favCoins[1] + "\" onclick=\"checkNumberOfCheckedCoins(this)\">\n          <label for=\"" + favCoins[1] + "\"> " + favCoins[1] + "</label><br>\n\n          <input type=\"checkbox\" id=\"swal-input3\" name=\"" + favCoins[2] + "\" value=\"" + favCoins[2] + "\" onclick=\"checkNumberOfCheckedCoins(this)\">\n          <label for=\"" + favCoins[2] + "\"> " + favCoins[2] + "</label><br>\n\n          <input type=\"checkbox\" id=\"swal-input4\" name=\"" + favCoins[3] + "\" value=\"" + favCoins[3] + "\" onclick=\"checkNumberOfCheckedCoins(this)\">\n          <label for=\"" + favCoins[3] + "\"> " + favCoins[3] + "</label><br>\n\n          <input type=\"checkbox\" id=\"swal-input5\" name=\"" + favCoins[4] + "\" value=\"" + favCoins[4] + "\" onclick=\"checkNumberOfCheckedCoins(this)\">\n          <label for=\"" + favCoins[4] + "\"> " + favCoins[4] + "</label><br>\n\n          <input type=\"checkbox\" id=\"swal-input6\" name=\"" + favCoins[5] + "\" value=\"" + favCoins[5] + "\" onclick=\"checkNumberOfCheckedCoins(this)\">\n          <label for=\"" + favCoins[5] + "\"> " + favCoins[5] + "</label><br>\n          ",
+                            focusConfirm: false,
+                            preConfirm: function () {
+                                var zibi = [];
+                                document.getElementById('swal-input1').checked ? zibi.push(document.getElementById('swal-input1').value) : $("[slider-coin=\"" + document.getElementById('swal-input1').value + "\"]")[0].click();
+                                document.getElementById('swal-input2').checked ? zibi.push(document.getElementById('swal-input2').value) : $("[slider-coin=\"" + document.getElementById('swal-input2').value + "\"]")[0].click();
+                                document.getElementById('swal-input3').checked ? zibi.push(document.getElementById('swal-input3').value) : $("[slider-coin=\"" + document.getElementById('swal-input3').value + "\"]")[0].click();
+                                document.getElementById('swal-input4').checked ? zibi.push(document.getElementById('swal-input4').value) : $("[slider-coin=\"" + document.getElementById('swal-input4').value + "\"]")[0].click();
+                                document.getElementById('swal-input5').checked ? zibi.push(document.getElementById('swal-input5').value) : $("[slider-coin=\"" + document.getElementById('swal-input5').value + "\"]")[0].click();
+                                document.getElementById('swal-input6').checked ? zibi.push(document.getElementById('swal-input6').value) : $("[slider-coin=\"" + document.getElementById('swal-input6').value + "\"]")[0].click();
+                                favCoins = zibi;
+                                console.log(favCoins);
+                                return [];
+                            }
+                        })];
+                case 1:
+                    formValues = (_a.sent()).value;
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+function checkNumberOfCheckedCoins(caller) {
+    console.log(checked);
+    if (caller.checked) {
+        if (checked != 5) {
+            checked++;
+        }
+        else {
+            checked++;
+            alert('You need to select 5 Coins BITCH!');
+            caller.click();
+        }
+    }
+    else {
+        checked--;
+    }
+}
+// Search function (Allways Working)
+$("#search-form").on('submit', function (e) {
+    e.preventDefault();
+    var searchVal = document.getElementById('search-input').value;
+    $('.card-fade').fadeOut('slow');
+    console.log(searchVal);
+    if (searchVal == "") {
+        $('.card-fade').fadeIn('slow');
+        return;
+    }
+    $("#" + searchVal).fadeIn();
+});
+// Infinite Scroller
+function openNav() {
+    document.getElementById('nav-brand-cryptonite').classList.add('nav-brand-move-left');
+    document.getElementById("mySidenav").style.width = "250px";
+    document.getElementById("cards-container").style.marginLeft = "250px";
+}
+function closeNav() {
+    document.getElementById('nav-brand-cryptonite').classList.remove('nav-brand-move-left');
+    document.getElementById("mySidenav").style.width = "0";
+    document.getElementById("cards-container").style.marginLeft = "0";
+}
+// Moving Letters Effects
+var textWrapper = document.querySelector('.ml2');
+var anime;
+textWrapper.innerHTML = textWrapper.textContent.replace(/\S/g, "<span class='letter'>$&</span>");
+anime.timeline({ loop: true })
+    .add({
+    targets: '.ml2 .letter',
+    scale: [4, 1],
+    opacity: [0, 1],
+    translateZ: 0,
+    easing: "easeOutExpo",
+    duration: 950,
+    delay: function (el, i) { return 70 * i; }
+}).add({
+    targets: '.ml2',
+    opacity: 0,
+    duration: 1000,
+    easing: "easeOutExpo",
+    delay: 1000
+});
