@@ -23,8 +23,9 @@ interface Coin {
     symbol: string;
 };
 
-let activeContainer = 'cards-container'
+let activeContainer = 'ready-set-go'
 let allCoins: Coin[];
+let allCoinsData: Coin[]
 let Swal: any
 
 
@@ -33,6 +34,7 @@ async function getApiOnLoad(): Promise<void> {
     try {
         const res = await fetch('https://api.coingecko.com/api/v3/coins/list') // Fetching the list of all coins
         allCoins = await res.json() // set AllCoins with the api Data we fetched
+        allCoinsData = allCoins
 
         setCards() // Setting the card with the wanted data
     } catch (err) {
@@ -43,10 +45,11 @@ async function getApiOnLoad(): Promise<void> {
 
 // Sets the cards ~~ in getApiOnLoad()
 function setCards() {
+    activeContainer = 'cards-container'
     const cardsContainer = document.getElementById('cards-container')
 
     for (let i = 0; i < allCoins.length; i++) { // Looping through all Coins and making a card with each one 
-        if (i <= 150) { //~ Limited for the first 100 coins at the moment
+        if (i <= 100) { //~ Limited for the first 100 coins at the moment
             let cardDiv = buildCardHTML(allCoins[i], i)
             cardsContainer.append((<any>cardDiv))
         }
@@ -237,7 +240,8 @@ const liveChartCheck = async function () {
     setInterval(function () { updateChart(1) }, updateInterval);
 }
 
-getApiOnLoad() // Running the Get Api Function
+setTimeout(function(){ getApiOnLoad() }, 5500); // Runs Onload !!!
+
 
 
 
@@ -352,11 +356,13 @@ function loader(element) {
 // Container Change Function
 function changeContainer(caller) {
     let container = $(caller).attr('container')
-    $(`#${activeContainer}`).fadeOut(1000)
+    $(`#${activeContainer}`).fadeOut(850)
     $(`#${container}`).fadeIn(2000)
     activeContainer = container
+    closeNav()
 }
-let checked = 0;
+// 
+let checked: number = 0;
 
 async function tooManyCoins() {
     checked = 0;
@@ -365,22 +371,22 @@ async function tooManyCoins() {
         title: 'Multiple inputs',
         html:
             `
-          <input type="checkbox" id="swal-input1" name="${favCoins[0]}" value="${favCoins[0]}" onclick="checkNumberOfCheckedCoins(this)">
+          <input type="checkbox" id="swal-input1" class="sweatAlertCheckbox" name="${favCoins[0]}" value="${favCoins[0]}" onclick="checkNumberOfCheckedCoins(this)">
           <label for="${favCoins[0]}"> ${favCoins[0]}</label><br>
 
-          <input type="checkbox" id="swal-input2" name="${favCoins[1]}" value="${favCoins[1]}" onclick="checkNumberOfCheckedCoins(this)">
+          <input type="checkbox" id="swal-input2" class="sweatAlertCheckbox" name="${favCoins[1]}" value="${favCoins[1]}" onclick="checkNumberOfCheckedCoins(this)">
           <label for="${favCoins[1]}"> ${favCoins[1]}</label><br>
 
-          <input type="checkbox" id="swal-input3" name="${favCoins[2]}" value="${favCoins[2]}" onclick="checkNumberOfCheckedCoins(this)">
+          <input type="checkbox" id="swal-input3" class="sweatAlertCheckbox" name="${favCoins[2]}" value="${favCoins[2]}" onclick="checkNumberOfCheckedCoins(this)">
           <label for="${favCoins[2]}"> ${favCoins[2]}</label><br>
 
-          <input type="checkbox" id="swal-input4" name="${favCoins[3]}" value="${favCoins[3]}" onclick="checkNumberOfCheckedCoins(this)">
+          <input type="checkbox" id="swal-input4" class="sweatAlertCheckbox" name="${favCoins[3]}" value="${favCoins[3]}" onclick="checkNumberOfCheckedCoins(this)">
           <label for="${favCoins[3]}"> ${favCoins[3]}</label><br>
 
-          <input type="checkbox" id="swal-input5" name="${favCoins[4]}" value="${favCoins[4]}" onclick="checkNumberOfCheckedCoins(this)">
+          <input type="checkbox" id="swal-input5" class="sweatAlertCheckbox" name="${favCoins[4]}" value="${favCoins[4]}" onclick="checkNumberOfCheckedCoins(this)">
           <label for="${favCoins[4]}"> ${favCoins[4]}</label><br>
 
-          <input type="checkbox" id="swal-input6" name="${favCoins[5]}" value="${favCoins[5]}" onclick="checkNumberOfCheckedCoins(this)">
+          <input type="checkbox" id="swal-input6" class="sweatAlertCheckbox" name="${favCoins[5]}" value="${favCoins[5]}" onclick="checkNumberOfCheckedCoins(this)">
           <label for="${favCoins[5]}"> ${favCoins[5]}</label><br>
           `,
         focusConfirm: false,
@@ -405,10 +411,7 @@ async function tooManyCoins() {
 
 }
 
-
 function checkNumberOfCheckedCoins(caller) {
-    console.log(checked);
-
     if (caller.checked) {
         if (checked != 5) {
             checked++
@@ -429,15 +432,14 @@ $("#search-form").on('submit', function (e) {
     e.preventDefault();
     let searchVal = (<any>document.getElementById('search-input')).value
     $('.card-fade').fadeOut('slow');
-    console.log(searchVal);
-
 
     if (searchVal == "") {
         $('.card-fade').fadeIn('slow');
         return
     }
     $(`#${searchVal}`).fadeIn()
-});
+
+})
 
 // Infinite Scroller
 
@@ -445,16 +447,15 @@ function openNav() {
     document.getElementById('nav-brand-cryptonite').classList.add('nav-brand-move-left')
     document.getElementById("mySidenav").style.width = "250px";
     document.getElementById("cards-container").style.marginLeft = "250px";
-  
+
 }
 
 function closeNav() {
     document.getElementById('nav-brand-cryptonite').classList.remove('nav-brand-move-left')
     document.getElementById("mySidenav").style.width = "0";
     document.getElementById("cards-container").style.marginLeft = "0";
-  
-}
 
+}
 
 // Moving Letters Effects
 var textWrapper = document.querySelector('.ml2');
@@ -467,7 +468,7 @@ anime.timeline({ loop: true })
         opacity: [0, 1],
         translateZ: 0,
         easing: "easeOutExpo",
-        duration: 950,
+        duration: 1250,
         delay: (el, i) => 70 * i
     }).add({
         targets: '.ml2',
@@ -476,3 +477,59 @@ anime.timeline({ loop: true })
         easing: "easeOutExpo",
         delay: 1000
     });
+
+
+// ReadySetGo
+var ml4: any = {};
+ml4.opacityIn = [0, 1];
+ml4.scaleIn = [0.2, 1];
+ml4.scaleOut = 3;
+ml4.durationIn = 800;
+ml4.durationOut = 600;
+ml4.delay = 500;
+
+anime.timeline({ loop: false })
+    .add({
+        targets: '.ml4 .letters-1',
+        opacity: ml4.opacityIn,
+        scale: ml4.scaleIn,
+        duration: ml4.durationIn
+    }).add({
+        targets: '.ml4 .letters-1',
+        opacity: 0,
+        scale: ml4.scaleOut,
+        duration: ml4.durationOut,
+        easing: "easeInExpo",
+        delay: ml4.delay
+    }).add({
+        targets: '.ml4 .letters-2',
+        opacity: ml4.opacityIn,
+        scale: ml4.scaleIn,
+        duration: ml4.durationIn
+    }).add({
+        targets: '.ml4 .letters-2',
+        opacity: 0,
+        scale: ml4.scaleOut,
+        duration: ml4.durationOut,
+        easing: "easeInExpo",
+        delay: ml4.delay
+    }).add({
+        targets: '.ml4 .letters-3',
+        opacity: ml4.opacityIn,
+        scale: ml4.scaleIn,
+        duration: ml4.durationIn
+    }).add({
+        targets: '.ml4 .letters-3',
+        opacity: 0,
+        scale: ml4.scaleOut,
+        duration: ml4.durationOut,
+        easing: "easeInExpo",
+        delay: ml4.delay
+    }).add({
+        targets: '.ml4',
+        opacity: 0,
+        duration: 500,
+        delay: 500
+    });
+
+

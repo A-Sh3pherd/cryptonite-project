@@ -46,8 +46,9 @@ var AllCoinsInfo = /** @class */ (function () {
     return AllCoinsInfo;
 }()); // Class Ends here
 ;
-var activeContainer = 'cards-container';
+var activeContainer = 'ready-set-go';
 var allCoins;
+var allCoinsData;
 var Swal;
 // This Function runs on load
 function getApiOnLoad() {
@@ -64,6 +65,7 @@ function getApiOnLoad() {
                     return [4 /*yield*/, res.json()]; // set AllCoins with the api Data we fetched
                 case 2:
                     allCoins = _a.sent(); // set AllCoins with the api Data we fetched
+                    allCoinsData = allCoins;
                     setCards(); // Setting the card with the wanted data
                     return [3 /*break*/, 4];
                 case 3:
@@ -77,9 +79,10 @@ function getApiOnLoad() {
 }
 // Sets the cards ~~ in getApiOnLoad()
 function setCards() {
+    activeContainer = 'cards-container';
     var cardsContainer = document.getElementById('cards-container');
     for (var i = 0; i < allCoins.length; i++) { // Looping through all Coins and making a card with each one 
-        if (i <= 150) { //~ Limited for the first 100 coins at the moment
+        if (i <= 100) { //~ Limited for the first 100 coins at the moment
             var cardDiv = buildCardHTML(allCoins[i], i);
             cardsContainer.append(cardDiv);
         }
@@ -334,7 +337,7 @@ var liveChartCheck = function () {
         });
     });
 };
-getApiOnLoad(); // Running the Get Api Function
+setTimeout(function () { getApiOnLoad(); }, 5500); // Runs Onload !!!
 // HTML Templating \\
 var buildCoinDeatils = function (selectedCoin) { return "\n        <img src=\"" + selectedCoin.img + "\" alt=\"\">\n        <br>\n        \n        <p>\n        <strong>Usd Price:</strong> " + selectedCoin.usd + " $<br> \n        <strong>Eur Price:</strong> " + selectedCoin.eur + " \u20AC<br>\n        <strong>Ils Price:</strong> " + selectedCoin.ils + " \u20AA\n        </p\n        "; };
 // Build cards HTML
@@ -373,10 +376,12 @@ function loader(element) {
 // Container Change Function
 function changeContainer(caller) {
     var container = $(caller).attr('container');
-    $("#" + activeContainer).fadeOut(1000);
+    $("#" + activeContainer).fadeOut(850);
     $("#" + container).fadeIn(2000);
     activeContainer = container;
+    closeNav();
 }
+// 
 var checked = 0;
 function tooManyCoins() {
     return __awaiter(this, void 0, void 0, function () {
@@ -387,7 +392,7 @@ function tooManyCoins() {
                     checked = 0;
                     return [4 /*yield*/, Swal.fire({
                             title: 'Multiple inputs',
-                            html: "\n          <input type=\"checkbox\" id=\"swal-input1\" name=\"" + favCoins[0] + "\" value=\"" + favCoins[0] + "\" onclick=\"checkNumberOfCheckedCoins(this)\">\n          <label for=\"" + favCoins[0] + "\"> " + favCoins[0] + "</label><br>\n\n          <input type=\"checkbox\" id=\"swal-input2\" name=\"" + favCoins[1] + "\" value=\"" + favCoins[1] + "\" onclick=\"checkNumberOfCheckedCoins(this)\">\n          <label for=\"" + favCoins[1] + "\"> " + favCoins[1] + "</label><br>\n\n          <input type=\"checkbox\" id=\"swal-input3\" name=\"" + favCoins[2] + "\" value=\"" + favCoins[2] + "\" onclick=\"checkNumberOfCheckedCoins(this)\">\n          <label for=\"" + favCoins[2] + "\"> " + favCoins[2] + "</label><br>\n\n          <input type=\"checkbox\" id=\"swal-input4\" name=\"" + favCoins[3] + "\" value=\"" + favCoins[3] + "\" onclick=\"checkNumberOfCheckedCoins(this)\">\n          <label for=\"" + favCoins[3] + "\"> " + favCoins[3] + "</label><br>\n\n          <input type=\"checkbox\" id=\"swal-input5\" name=\"" + favCoins[4] + "\" value=\"" + favCoins[4] + "\" onclick=\"checkNumberOfCheckedCoins(this)\">\n          <label for=\"" + favCoins[4] + "\"> " + favCoins[4] + "</label><br>\n\n          <input type=\"checkbox\" id=\"swal-input6\" name=\"" + favCoins[5] + "\" value=\"" + favCoins[5] + "\" onclick=\"checkNumberOfCheckedCoins(this)\">\n          <label for=\"" + favCoins[5] + "\"> " + favCoins[5] + "</label><br>\n          ",
+                            html: "\n          <input type=\"checkbox\" id=\"swal-input1\" class=\"sweatAlertCheckbox\" name=\"" + favCoins[0] + "\" value=\"" + favCoins[0] + "\" onclick=\"checkNumberOfCheckedCoins(this)\">\n          <label for=\"" + favCoins[0] + "\"> " + favCoins[0] + "</label><br>\n\n          <input type=\"checkbox\" id=\"swal-input2\" class=\"sweatAlertCheckbox\" name=\"" + favCoins[1] + "\" value=\"" + favCoins[1] + "\" onclick=\"checkNumberOfCheckedCoins(this)\">\n          <label for=\"" + favCoins[1] + "\"> " + favCoins[1] + "</label><br>\n\n          <input type=\"checkbox\" id=\"swal-input3\" class=\"sweatAlertCheckbox\" name=\"" + favCoins[2] + "\" value=\"" + favCoins[2] + "\" onclick=\"checkNumberOfCheckedCoins(this)\">\n          <label for=\"" + favCoins[2] + "\"> " + favCoins[2] + "</label><br>\n\n          <input type=\"checkbox\" id=\"swal-input4\" class=\"sweatAlertCheckbox\" name=\"" + favCoins[3] + "\" value=\"" + favCoins[3] + "\" onclick=\"checkNumberOfCheckedCoins(this)\">\n          <label for=\"" + favCoins[3] + "\"> " + favCoins[3] + "</label><br>\n\n          <input type=\"checkbox\" id=\"swal-input5\" class=\"sweatAlertCheckbox\" name=\"" + favCoins[4] + "\" value=\"" + favCoins[4] + "\" onclick=\"checkNumberOfCheckedCoins(this)\">\n          <label for=\"" + favCoins[4] + "\"> " + favCoins[4] + "</label><br>\n\n          <input type=\"checkbox\" id=\"swal-input6\" class=\"sweatAlertCheckbox\" name=\"" + favCoins[5] + "\" value=\"" + favCoins[5] + "\" onclick=\"checkNumberOfCheckedCoins(this)\">\n          <label for=\"" + favCoins[5] + "\"> " + favCoins[5] + "</label><br>\n          ",
                             focusConfirm: false,
                             preConfirm: function () {
                                 var zibi = [];
@@ -410,7 +415,6 @@ function tooManyCoins() {
     });
 }
 function checkNumberOfCheckedCoins(caller) {
-    console.log(checked);
     if (caller.checked) {
         if (checked != 5) {
             checked++;
@@ -430,7 +434,6 @@ $("#search-form").on('submit', function (e) {
     e.preventDefault();
     var searchVal = document.getElementById('search-input').value;
     $('.card-fade').fadeOut('slow');
-    console.log(searchVal);
     if (searchVal == "") {
         $('.card-fade').fadeIn('slow');
         return;
@@ -459,7 +462,7 @@ anime.timeline({ loop: true })
     opacity: [0, 1],
     translateZ: 0,
     easing: "easeOutExpo",
-    duration: 950,
+    duration: 1250,
     delay: function (el, i) { return 70 * i; }
 }).add({
     targets: '.ml2',
@@ -467,4 +470,55 @@ anime.timeline({ loop: true })
     duration: 1000,
     easing: "easeOutExpo",
     delay: 1000
+});
+// ReadySetGo
+var ml4 = {};
+ml4.opacityIn = [0, 1];
+ml4.scaleIn = [0.2, 1];
+ml4.scaleOut = 3;
+ml4.durationIn = 800;
+ml4.durationOut = 600;
+ml4.delay = 500;
+anime.timeline({ loop: false })
+    .add({
+    targets: '.ml4 .letters-1',
+    opacity: ml4.opacityIn,
+    scale: ml4.scaleIn,
+    duration: ml4.durationIn
+}).add({
+    targets: '.ml4 .letters-1',
+    opacity: 0,
+    scale: ml4.scaleOut,
+    duration: ml4.durationOut,
+    easing: "easeInExpo",
+    delay: ml4.delay
+}).add({
+    targets: '.ml4 .letters-2',
+    opacity: ml4.opacityIn,
+    scale: ml4.scaleIn,
+    duration: ml4.durationIn
+}).add({
+    targets: '.ml4 .letters-2',
+    opacity: 0,
+    scale: ml4.scaleOut,
+    duration: ml4.durationOut,
+    easing: "easeInExpo",
+    delay: ml4.delay
+}).add({
+    targets: '.ml4 .letters-3',
+    opacity: ml4.opacityIn,
+    scale: ml4.scaleIn,
+    duration: ml4.durationIn
+}).add({
+    targets: '.ml4 .letters-3',
+    opacity: 0,
+    scale: ml4.scaleOut,
+    duration: ml4.durationOut,
+    easing: "easeInExpo",
+    delay: ml4.delay
+}).add({
+    targets: '.ml4',
+    opacity: 0,
+    duration: 500,
+    delay: 500
 });
