@@ -240,7 +240,7 @@ const liveChartCheck = async function () {
     setInterval(function () { updateChart(1) }, updateInterval);
 }
 
-setTimeout(function(){ getApiOnLoad() }, 5500); // Runs Onload !!!
+
 
 
 
@@ -366,30 +366,33 @@ let checked: number = 0;
 
 async function tooManyCoins() {
     checked = 0;
-
+    
     const { value: formValues } = await Swal.fire({
-        title: 'Multiple inputs',
+        title: 'Select 5 coins Max',
         html:
             `
-          <input type="checkbox" id="swal-input1" class="sweatAlertCheckbox" name="${favCoins[0]}" value="${favCoins[0]}" onclick="checkNumberOfCheckedCoins(this)">
-          <label for="${favCoins[0]}"> ${favCoins[0]}</label><br>
+          <label for="${favCoins[0]}"> ${favCoins[0]}</label>
+          <input type="checkbox" id="swal-input1" class="sweatAlertCheckbox" name="${favCoins[0]}" value="${favCoins[0]}" onclick="checkNumberOfCheckedCoins(this)"><br>
+          
+          <label for="${favCoins[1]}"> ${favCoins[1]}</label>
+          <input type="checkbox" id="swal-input2" class="sweatAlertCheckbox" name="${favCoins[1]}" value="${favCoins[1]}" onclick="checkNumberOfCheckedCoins(this)"><br>
+         
 
-          <input type="checkbox" id="swal-input2" class="sweatAlertCheckbox" name="${favCoins[1]}" value="${favCoins[1]}" onclick="checkNumberOfCheckedCoins(this)">
-          <label for="${favCoins[1]}"> ${favCoins[1]}</label><br>
-
-          <input type="checkbox" id="swal-input3" class="sweatAlertCheckbox" name="${favCoins[2]}" value="${favCoins[2]}" onclick="checkNumberOfCheckedCoins(this)">
-          <label for="${favCoins[2]}"> ${favCoins[2]}</label><br>
-
-          <input type="checkbox" id="swal-input4" class="sweatAlertCheckbox" name="${favCoins[3]}" value="${favCoins[3]}" onclick="checkNumberOfCheckedCoins(this)">
-          <label for="${favCoins[3]}"> ${favCoins[3]}</label><br>
-
-          <input type="checkbox" id="swal-input5" class="sweatAlertCheckbox" name="${favCoins[4]}" value="${favCoins[4]}" onclick="checkNumberOfCheckedCoins(this)">
-          <label for="${favCoins[4]}"> ${favCoins[4]}</label><br>
-
-          <input type="checkbox" id="swal-input6" class="sweatAlertCheckbox" name="${favCoins[5]}" value="${favCoins[5]}" onclick="checkNumberOfCheckedCoins(this)">
-          <label for="${favCoins[5]}"> ${favCoins[5]}</label><br>
+          <label for="${favCoins[2]}"> ${favCoins[2]}</label>
+          <input type="checkbox" id="swal-input3" class="sweatAlertCheckbox" name="${favCoins[2]}" value="${favCoins[2]}" onclick="checkNumberOfCheckedCoins(this)"><br>
+          
+          <label for="${favCoins[3]}"> ${favCoins[3]}</label>
+          <input type="checkbox" id="swal-input4" class="sweatAlertCheckbox" name="${favCoins[3]}" value="${favCoins[3]}" onclick="checkNumberOfCheckedCoins(this)"><br>
+          
+          <label for="${favCoins[4]}"> ${favCoins[4]}</label>
+          <input type="checkbox" id="swal-input5" class="sweatAlertCheckbox" name="${favCoins[4]}" value="${favCoins[4]}" onclick="checkNumberOfCheckedCoins(this)"><br>
+          
+          <label for="${favCoins[5]}"> ${favCoins[5]}</label>
+          <input type="checkbox" id="swal-input6" class="sweatAlertCheckbox" name="${favCoins[5]}" value="${favCoins[5]}" onclick="checkNumberOfCheckedCoins(this)"><br>
+          
+          
           `,
-        focusConfirm: false,
+        focusConfirm: true,
         preConfirm: () => {
             let zibi: any[] = [];
 
@@ -441,7 +444,7 @@ $("#search-form").on('submit', function (e) {
 
 })
 
-// Infinite Scroller
+
 
 function openNav() {
     document.getElementById('nav-brand-cryptonite').classList.add('nav-brand-move-left')
@@ -461,7 +464,7 @@ function closeNav() {
 var textWrapper = document.querySelector('.ml2');
 let anime: any
 textWrapper.innerHTML = textWrapper.textContent.replace(/\S/g, "<span class='letter'>$&</span>");
-anime.timeline({ loop: true })
+anime.timeline({ loop: false })
     .add({
         targets: '.ml2 .letter',
         scale: [4, 1],
@@ -470,13 +473,7 @@ anime.timeline({ loop: true })
         easing: "easeOutExpo",
         duration: 1250,
         delay: (el, i) => 70 * i
-    }).add({
-        targets: '.ml2',
-        opacity: 0,
-        duration: 1000,
-        easing: "easeOutExpo",
-        delay: 1000
-    });
+    })
 
 
 // ReadySetGo
@@ -525,11 +522,12 @@ anime.timeline({ loop: false })
         duration: ml4.durationOut,
         easing: "easeInExpo",
         delay: ml4.delay
-    }).add({
+    }).add({ 
         targets: '.ml4',
         opacity: 0,
         duration: 500,
         delay: 500
     });
 
-
+// Runs Onload :
+    setTimeout(function(){ getApiOnLoad() }, 5500); // Runs Onload !!!

@@ -337,7 +337,6 @@ var liveChartCheck = function () {
         });
     });
 };
-setTimeout(function () { getApiOnLoad(); }, 5500); // Runs Onload !!!
 // HTML Templating \\
 var buildCoinDeatils = function (selectedCoin) { return "\n        <img src=\"" + selectedCoin.img + "\" alt=\"\">\n        <br>\n        \n        <p>\n        <strong>Usd Price:</strong> " + selectedCoin.usd + " $<br> \n        <strong>Eur Price:</strong> " + selectedCoin.eur + " \u20AC<br>\n        <strong>Ils Price:</strong> " + selectedCoin.ils + " \u20AA\n        </p\n        "; };
 // Build cards HTML
@@ -391,9 +390,9 @@ function tooManyCoins() {
                 case 0:
                     checked = 0;
                     return [4 /*yield*/, Swal.fire({
-                            title: 'Multiple inputs',
-                            html: "\n          <input type=\"checkbox\" id=\"swal-input1\" class=\"sweatAlertCheckbox\" name=\"" + favCoins[0] + "\" value=\"" + favCoins[0] + "\" onclick=\"checkNumberOfCheckedCoins(this)\">\n          <label for=\"" + favCoins[0] + "\"> " + favCoins[0] + "</label><br>\n\n          <input type=\"checkbox\" id=\"swal-input2\" class=\"sweatAlertCheckbox\" name=\"" + favCoins[1] + "\" value=\"" + favCoins[1] + "\" onclick=\"checkNumberOfCheckedCoins(this)\">\n          <label for=\"" + favCoins[1] + "\"> " + favCoins[1] + "</label><br>\n\n          <input type=\"checkbox\" id=\"swal-input3\" class=\"sweatAlertCheckbox\" name=\"" + favCoins[2] + "\" value=\"" + favCoins[2] + "\" onclick=\"checkNumberOfCheckedCoins(this)\">\n          <label for=\"" + favCoins[2] + "\"> " + favCoins[2] + "</label><br>\n\n          <input type=\"checkbox\" id=\"swal-input4\" class=\"sweatAlertCheckbox\" name=\"" + favCoins[3] + "\" value=\"" + favCoins[3] + "\" onclick=\"checkNumberOfCheckedCoins(this)\">\n          <label for=\"" + favCoins[3] + "\"> " + favCoins[3] + "</label><br>\n\n          <input type=\"checkbox\" id=\"swal-input5\" class=\"sweatAlertCheckbox\" name=\"" + favCoins[4] + "\" value=\"" + favCoins[4] + "\" onclick=\"checkNumberOfCheckedCoins(this)\">\n          <label for=\"" + favCoins[4] + "\"> " + favCoins[4] + "</label><br>\n\n          <input type=\"checkbox\" id=\"swal-input6\" class=\"sweatAlertCheckbox\" name=\"" + favCoins[5] + "\" value=\"" + favCoins[5] + "\" onclick=\"checkNumberOfCheckedCoins(this)\">\n          <label for=\"" + favCoins[5] + "\"> " + favCoins[5] + "</label><br>\n          ",
-                            focusConfirm: false,
+                            title: 'Select 5 coins Max',
+                            html: "\n          <label for=\"" + favCoins[0] + "\"> " + favCoins[0] + "</label>\n          <input type=\"checkbox\" id=\"swal-input1\" class=\"sweatAlertCheckbox\" name=\"" + favCoins[0] + "\" value=\"" + favCoins[0] + "\" onclick=\"checkNumberOfCheckedCoins(this)\"><br>\n          \n          <label for=\"" + favCoins[1] + "\"> " + favCoins[1] + "</label>\n          <input type=\"checkbox\" id=\"swal-input2\" class=\"sweatAlertCheckbox\" name=\"" + favCoins[1] + "\" value=\"" + favCoins[1] + "\" onclick=\"checkNumberOfCheckedCoins(this)\"><br>\n         \n\n          <label for=\"" + favCoins[2] + "\"> " + favCoins[2] + "</label>\n          <input type=\"checkbox\" id=\"swal-input3\" class=\"sweatAlertCheckbox\" name=\"" + favCoins[2] + "\" value=\"" + favCoins[2] + "\" onclick=\"checkNumberOfCheckedCoins(this)\"><br>\n          \n          <label for=\"" + favCoins[3] + "\"> " + favCoins[3] + "</label>\n          <input type=\"checkbox\" id=\"swal-input4\" class=\"sweatAlertCheckbox\" name=\"" + favCoins[3] + "\" value=\"" + favCoins[3] + "\" onclick=\"checkNumberOfCheckedCoins(this)\"><br>\n          \n          <label for=\"" + favCoins[4] + "\"> " + favCoins[4] + "</label>\n          <input type=\"checkbox\" id=\"swal-input5\" class=\"sweatAlertCheckbox\" name=\"" + favCoins[4] + "\" value=\"" + favCoins[4] + "\" onclick=\"checkNumberOfCheckedCoins(this)\"><br>\n          \n          <label for=\"" + favCoins[5] + "\"> " + favCoins[5] + "</label>\n          <input type=\"checkbox\" id=\"swal-input6\" class=\"sweatAlertCheckbox\" name=\"" + favCoins[5] + "\" value=\"" + favCoins[5] + "\" onclick=\"checkNumberOfCheckedCoins(this)\"><br>\n          \n          \n          ",
+                            focusConfirm: true,
                             preConfirm: function () {
                                 var zibi = [];
                                 document.getElementById('swal-input1').checked ? zibi.push(document.getElementById('swal-input1').value) : $("[slider-coin=\"" + document.getElementById('swal-input1').value + "\"]")[0].click();
@@ -440,7 +439,6 @@ $("#search-form").on('submit', function (e) {
     }
     $("#" + searchVal).fadeIn();
 });
-// Infinite Scroller
 function openNav() {
     document.getElementById('nav-brand-cryptonite').classList.add('nav-brand-move-left');
     document.getElementById("mySidenav").style.width = "250px";
@@ -455,7 +453,7 @@ function closeNav() {
 var textWrapper = document.querySelector('.ml2');
 var anime;
 textWrapper.innerHTML = textWrapper.textContent.replace(/\S/g, "<span class='letter'>$&</span>");
-anime.timeline({ loop: true })
+anime.timeline({ loop: false })
     .add({
     targets: '.ml2 .letter',
     scale: [4, 1],
@@ -464,12 +462,6 @@ anime.timeline({ loop: true })
     easing: "easeOutExpo",
     duration: 1250,
     delay: function (el, i) { return 70 * i; }
-}).add({
-    targets: '.ml2',
-    opacity: 0,
-    duration: 1000,
-    easing: "easeOutExpo",
-    delay: 1000
 });
 // ReadySetGo
 var ml4 = {};
@@ -522,3 +514,5 @@ anime.timeline({ loop: false })
     duration: 500,
     delay: 500
 });
+// Runs Onload :
+setTimeout(function () { getApiOnLoad(); }, 5500); // Runs Onload !!!
