@@ -320,7 +320,7 @@ const buildAboutPage = () => {
         <p class="about-info">In this project, my goal was to make the Crypto-Currency trading-life easier.</p>
         <p class="about-info">In this website you can find information about all the crypto coins in the world !</p>
         <p class="about-info">By selecting your favorite coins you can view a real-time data about the selected coins. </p>
-        <p class="about-info"> </p>
+        <p class="about-info">This project simulate a <strong>S</strong>ingle <strong>P</strong>age <strong>A</strong>pplication Principles. </p>
         <p class="about-info"> </p>
       </div>
     </div>
@@ -356,10 +356,11 @@ function loader(element) {
 // Container Change Function
 function changeContainer(caller) {
     let container = $(caller).attr('container')
+    const sideNav = document.getElementsByClassName('sidenav')
     $(`#${activeContainer}`).fadeOut(850)
     $(`#${container}`).fadeIn(2000)
     activeContainer = container
-    closeNav()
+
 }
 // 
 let checked: number = 0;
@@ -450,14 +451,6 @@ function openNav() {
     document.getElementById('nav-brand-cryptonite').classList.add('nav-brand-move-left')
     document.getElementById("mySidenav").style.width = "250px";
     document.getElementById("cards-container").style.marginLeft = "250px";
-
-}
-
-function closeNav() {
-    document.getElementById('nav-brand-cryptonite').classList.remove('nav-brand-move-left')
-    document.getElementById("mySidenav").style.width = "0";
-    document.getElementById("cards-container").style.marginLeft = "0";
-
 }
 
 // Moving Letters Effects
