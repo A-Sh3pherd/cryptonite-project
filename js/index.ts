@@ -325,8 +325,6 @@ const buildAboutPage = () => {
       </div>
     </div>
     `
-
-
 }
 
 
