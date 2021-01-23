@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cryptonite Project</title>
+  <title>Cryptonite</title>
   <!-- Bootstrap Cdn -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
@@ -17,57 +17,57 @@
     rel="stylesheet">
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@1,300&display=swap" rel="stylesheet">
-
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+    integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
   <!-- Text Effects -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.0.2/anime.min.js"></script>
   <!-- My Custom Css -->
-  <link rel="stylesheet" href="../css/index.css">
+  <link rel="stylesheet" href="css/index.css">
 </head>
 
 <body>
-
-
   <!-- Start Of Page -->
   <nav class="navbar sticky-top p-0">
-    <!-- Cryptonite Top nav -->
     <div id="top-nav-cryptonite-header" class="container-fluid">
       <span id="nav-brand-cryptonite" class="navbar-brand mb-0 h1 ml2">
-        <span>c</span><span>r</span><span>y</span><span>p</span><span>t</span><span>o</span><span>n</span><span>i</span><span>t</span><span>e</span>
+        <span>C</span><span>r</span><span>y</span><span>p</span><span>t</span><span>o</span><span>n</span><span>i</span><span>t</span><span>e</span>
       </span>
-      <!-- <h1 class="justify-content-center ml3"><span>t</span><span>h</span><span>e</span> <span>b</span><span>e</span><span>s</span><span>t</span>The Best For Trading</h1> -->
     </div>
 
     <div class="goat"></div>
-
-    <div id="mySidenav" class="sidenav">
-      <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-      <form class="d-flex mt-3" id="search-form">
-        <input id="search-input" class="form-control me-auto" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-primary" type="submit">Search</button>
-      </form>
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link " aria-current="page" id="nav-home" container="cards-container"
-            onclick='changeContainer(this);' href="#">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#" container="live-container"
-            onclick='liveReportsPage();changeContainer(this);'>Live
-            Reports</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#" tabindex="-1" container="about-container" aria-disabled="true"
-            onclick='changeContainer(this);buildAboutPage()'>About</a>
-        </li>
-      </ul>
-
-    </div>
-    <span style="font-size:30px;cursor:pointer;color: whitesmoke;" onclick="openNav()">&#9776; Menu</span>
   </nav>
+  <div id="mySidenav" class="sidenav">
+    <form class="d-flex mt-3 ms-3" id="search-form">
+      <input id="search-input" class="form-control me-auto" type="search" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-secondary" type="submit">Search</button>
+    </form>
+    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+      <li class="nav-item">
+        <a class="nav-link " aria-current="page" id="nav-home" container="cards-container"
+          onclick='changeContainer(this);' href="#"> <i class="fas fa-home"></i> Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#" container="live-container" onclick='liveReportsPage();changeContainer(this);'> <i
+            class="far fa-chart-line"></i> Live
+          Reports</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#" tabindex="-1" container="about-container" aria-disabled="true"
+          onclick='changeContainer(this);buildAboutPage()'><i class="fal fa-address-card"></i> About</a>
+      </li>
+    </ul>
 
+  </div>
 
-
-
+  <!-- Ready Set Go container -->
+  <h1 class="ml4 text-center" container="ready-set-go">
+    <span class="letters letters-1">Ready</span>
+    <span class="letters letters-2">Set</span>
+    <span class="letters letters-3">Go!</span>
+  </h1>`
   <!-- About Container -->
   <div id="about-container">
     <div class="about-container mt-5"></div>
@@ -94,12 +94,14 @@
   <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
   <script src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>
   <!-- sweet alerts -->
-  <script src="/node_modules/sweetalert2/dist/sweetalert2.all.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/promise-polyfill@8/dist/polyfill.js"></script>
+  <!-- <script src="/node_modules/sweetalert2/dist/sweetalert2.all.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/promise-polyfill@8/dist/polyfill.js"></script> -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
   <!-- Infinite Scroller -->
 
   <!-- My Script -->
-  <script src="../js/index.js"></script>
+  <script src="js/index.js"></script>
 </body>
 
 </html>
