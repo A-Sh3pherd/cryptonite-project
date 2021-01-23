@@ -156,7 +156,7 @@ const liveChartCheck = async function () {
     let data = await getMultipleCoinsData()
     let fullData = []
     if (data.Response) {
-        alert('יש לבחור לפחות מטבעה אחד לצפייה בלייב רפורטס')
+        alert('You must add at least 1 coin to your favorites.')
         document.getElementById('nav-home').click()
         return
     }
