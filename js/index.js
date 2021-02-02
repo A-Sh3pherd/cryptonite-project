@@ -82,7 +82,7 @@ function setCards() {
     activeContainer = 'cards-container';
     var cardsContainer = document.getElementById('cards-container');
     for (var i = 0; i < allCoins.length; i++) { // Looping through all Coins and making a card with each one 
-        if (i <= 2500) { //~ Limited for the first 100 coins at the moment
+        if (i <= 150) { //~ Limited for the first 100 coins at the moment
             var cardDiv = buildCardHTML(allCoins[i], i);
             cardsContainer.append(cardDiv);
         }
@@ -219,6 +219,7 @@ function getMultipleCoinsData() {
         });
     });
 }
+// Chart
 var liveChartCheck = function () {
     return __awaiter(this, void 0, void 0, function () {
         function toggleDataSeries(e) {

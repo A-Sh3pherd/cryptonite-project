@@ -49,7 +49,7 @@ function setCards() {
     const cardsContainer = document.getElementById('cards-container')
 
     for (let i = 0; i < allCoins.length; i++) { // Looping through all Coins and making a card with each one 
-        if (i <= 2500) { //~ Limited for the first 100 coins at the moment
+        if (i <= 150) { //~ Limited for the first 100 coins at the moment
             let cardDiv = buildCardHTML(allCoins[i], i)
             cardsContainer.append((<any>cardDiv))
         }
@@ -151,7 +151,7 @@ async function getMultipleCoinsData() {
         console.error(err)
     }
 }
-
+// Chart
 const liveChartCheck = async function () {
     let data = await getMultipleCoinsData()
     let fullData = []
