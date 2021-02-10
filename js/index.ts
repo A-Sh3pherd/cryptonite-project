@@ -302,7 +302,7 @@ const buildAboutPage = () => {
     about.innerHTML = `
     <div class="row">
       <div class="col-auto">
-        <img id="about-photo" src="/imgs/about-photo.png" alt="">
+        <img id="about-photo" src="imgs/about-photo.png" alt="">
       </div>
       <div class="col-auto mt-4">
         <p style="margin-left: 100px;">Hello, My name is Alon Shefer and im the developer of this project.</p>
