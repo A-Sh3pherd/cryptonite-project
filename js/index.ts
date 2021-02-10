@@ -321,7 +321,7 @@ const buildAboutPage = () => {
         <p class="about-info">In this website you can find information about all the crypto coins in the world !</p>
         <p class="about-info">By selecting your favorite coins you can view a real-time data about the selected coins. </p>
         <p class="about-info">This project simulate a <strong>S</strong>ingle <strong>P</strong>age <strong>A</strong>pplication Principles. </p>
-        <p class="about-info"> </p>
+        <p class="about-info">So i hope you enjoy the project, and give me a good score 😁 </p>
       </div>
     </div>
     `
